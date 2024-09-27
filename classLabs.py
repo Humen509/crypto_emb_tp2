@@ -18,9 +18,9 @@ class Group(object):
     
 
     def checkParameters(self):
-        if self.l != "ZpAdditive" and self.l != "ZpMultiplicative" and self.l != "F2^n" and self.l != "ZpElliptic":
+        if self.l != "ZpAdditive" and self.l != "ZpMultiplicative" and self.l != "F2^n" and self.l != "ECConZp":
             raise Exception("l parameter is unknown")
-        return (self.l == "ZpElliptic" and self.e == [0, 0] and ((4*self.A**3 + 27*self.B**2) % self.p != 0) ) or ((self.l == "ZpAdditive" and self.e == 0)) or (self.l == "ZpMultiplicative" and self.e == 1) or (self.l == "F2^n" and self.e == 1)
+        return (self.l == "ECConZp" and self.e == [0, 0] and ((4*self.A**3 + 27*self.B**2) % self.p != 0) ) or ((self.l == "ZpAdditive" and self.e == 0)) or (self.l == "ZpMultiplicative" and self.e == 1) or (self.l == "F2^n" and self.e == 1)
 
 
     def law(self, g1, g2):
@@ -41,7 +41,55 @@ class Group(object):
                     g1 = g1 ^ self.poly
                 g2 = g2 >> 1
             return p
-        return
+        
+        if self.l == "ECConZp":
+#PART 5 
+       #     if g1 == self.e:
+       #         return g2
+       #     elif g2 == self.e:
+       #         return g1
+       #     elif g1[0] == g2[0] and g1 != g2:
+       #         return self.e
+       #     elif g1 == g2 and g1[0] == 0:
+       #         return self.e
+       #     elif g1[0] == g2[0] and g1[1] == g2[1] and g2[1] != 0:
+       #         groupMulti = Group("ZpMultiplicative", 1, self.N, self.p, self.poly, self.A, self.B)
+       #         lamda = g1[0] + (g1[1] * groupMulti.exp(g1[1], -1))
+       #         x = (lamda**2 + lamda + self.A) % self.p
+       #         y = (lamda*(g1[0] + x + g1[1]) ) % self.p
+       #         print("[x, y] : ", [x, y])
+       #         return [x, y] 
+       #     elif g1[0] != g2[0]:
+       #         groupMulti = Group("ZpMultiplicative", 1, self.N, self.p, self.poly, self.A, self.B)
+       #         lamda = (g1[1] + g2[1])*self.exp(g1[0] + g2[0], -1)
+       #         x = (lamda**2 + lamda + g1[0] + g2[0] + self.A) % self.p
+       #         y = (lamda*(g1[0] + x) + x + g1[1]) % self.p
+       #         print("[x, y] : ", [x, y])
+       #         return [x, y]
+            
+            if g1 == self.e:
+                return g2
+            elif g2 == self.e:
+                return g1
+            elif g1[0] == g2[0] and g1[1] != g2[1]:
+                return self.e
+            elif g1[0] == g2[0] and g1[1] == g2[1] and g2[1] == 0:
+                return self.e
+            elif g1[0] == g2[0] and g1[1] == g2[1] and g2[1] != 0:
+                groupMulti = Group("ZpMultiplicative", 1, self.p - 1, self.p, self.poly, self.A, self.B)
+                lamda = (3*(groupMulti.exp(g1[0],2)) + self.A) * groupMulti.exp(2*g1[1], -1)
+                x = (groupMulti.exp(lamda, 2) - 2*g1[0]) % self.p
+                y = (lamda*(g1[0] - x) - g1[1]) % self.p
+                return [x, y]
+            elif g1[0] != g2[0]:
+                groupMulti = Group("ZpMultiplicative", 1, self.p - 1, self.p, self.poly, self.A, self.B)
+                lamda = (g2[1] - g1[1])*groupMulti.exp(g2[0] - g1[0], -1)
+                x = (groupMulti.exp(lamda, 2) - g1[0] - g2[0]) % self.p
+                y = (lamda*(g1[0] - x) - g1[1]) % self.p
+                return [x, y]
+
+        raise Exception("ERROR")
+
 
     def exp(self, g, k):
         if k == 0 :

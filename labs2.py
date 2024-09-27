@@ -18,7 +18,7 @@ def testLabs1_part2():
     idElement = [0, 0]
 
     print("\n ===== PART 1 =====")
-    monSousGroup = classLabs.SubGroup("ZpElliptic", idElement, N, p, G, None, A, B)
+    monSousGroup = classLabs.SubGroup("ECConZp", idElement, N, p, G, None, A, B)
     print("Test 0 infiny :", monSousGroup.verify([0, 0]))
     googlePublicKey = open("google-fr.der", 'rb')
     PK = googlePublicKey.read()[0xb0 + 15 : 0xf0 + 15]
@@ -29,5 +29,23 @@ def testLabs1_part2():
     print("Pkx :", hex(Pkx))
     print("Pky :", hex(Pky))
     print("Test Google :", monSousGroup.verify([Pkx, Pky]))
+
+    print("\n ===== PART 2 =====")
+
+    print("Test DiffieHellman dans Courbe Elli : ", monSousGroup.testDiffieHellman())
+
+    #A = 1
+    #B = 2
+    #P = [4, 9]
+    #monGroup = classLabs.Group("ECConZp", idElement, 16, 11, None, A, B)
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(P, [0,0]))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(P, P))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(2*P, P))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(3*P, P))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(4*P, P))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(5*P, P))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(6*P, P))
+    #print("Test courbe (1, 1) et (1, 1) :", monGroup.law(7*P, P))
+
 
 testLabs1_part2()
