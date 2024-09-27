@@ -5,20 +5,22 @@ from sympy.ntheory.modular import crt
 import utils
 
 class Group(object):
-    def __init__(self, l, e, N, p, poly = None):
+    def __init__(self, l, e, N, p, poly = None, A = None, B = None):
         self.l = l
         self.e = e
         self.N = N
         self.p = p
         self.poly = poly
+        self.A = A
+        self.B = B        
         if self.checkParameters() != True:
             raise Exception("Problem with parameters")
     
 
     def checkParameters(self):
-        if self.l != "ZpAdditive" and self.l != "ZpMultiplicative" and self.l != "F2^n":
+        if self.l != "ZpAdditive" and self.l != "ZpMultiplicative" and self.l != "F2^n" and self.l != "ZpElliptic":
             raise Exception("l parameter is unknown")
-        return (self.l == "ZpAdditive" and self.e == 0) or (self.l == "ZpMultiplicative" and self.e == 1) or (self.l == "F2^n" and self.e == 1)
+        return (self.l == "ZpElliptic" and self.e == [0, 0] and ((4*self.A**3 + 27*self.B**2) % self.p != 0) ) or ((self.l == "ZpAdditive" and self.e == 0)) or (self.l == "ZpMultiplicative" and self.e == 1) or (self.l == "F2^n" and self.e == 1)
 
 
     def law(self, g1, g2):
@@ -67,13 +69,16 @@ class Group(object):
         return h0 
     
 
-    
-
 
 class SubGroup(Group):
-    def __init__(self, l, e, N, p, g, poly = None):
-        Group.__init__(self, l, e, N, p, poly)
+    def __init__(self, l, e, N, p, g, poly = None, A = None, B = None):
+        Group.__init__(self, l, e, N, p, poly, A, B)
         self.g = g
+
+    def verify(self, P):
+        if P == self.e:
+            return True
+        return ((P[1]**2) % self.p) == ((P[0]**3 + self.A * P[0] + self.B) % self.p )
 
     #Part 2
     def DLbyBabyStepGiantStep(self, h):
