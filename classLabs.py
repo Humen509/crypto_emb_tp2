@@ -41,31 +41,9 @@ class Group(object):
                     g1 = g1 ^ self.poly
                 g2 = g2 >> 1
             return p
-        
+        print("g1 =", g1)
+        print("g2 =", g2)
         if self.l == "ECConZp":
-#PART 5 
-       #     if g1 == self.e:
-       #         return g2
-       #     elif g2 == self.e:
-       #         return g1
-       #     elif g1[0] == g2[0] and g1 != g2:
-       #         return self.e
-       #     elif g1 == g2 and g1[0] == 0:
-       #         return self.e
-       #     elif g1[0] == g2[0] and g1[1] == g2[1] and g2[1] != 0:
-       #         groupMulti = Group("ZpMultiplicative", 1, self.N, self.p, self.poly, self.A, self.B)
-       #         lamda = g1[0] + (g1[1] * groupMulti.exp(g1[1], -1))
-       #         x = (lamda**2 + lamda + self.A) % self.p
-       #         y = (lamda*(g1[0] + x + g1[1]) ) % self.p
-       #         print("[x, y] : ", [x, y])
-       #         return [x, y] 
-       #     elif g1[0] != g2[0]:
-       #         groupMulti = Group("ZpMultiplicative", 1, self.N, self.p, self.poly, self.A, self.B)
-       #         lamda = (g1[1] + g2[1])*self.exp(g1[0] + g2[0], -1)
-       #         x = (lamda**2 + lamda + g1[0] + g2[0] + self.A) % self.p
-       #         y = (lamda*(g1[0] + x) + x + g1[1]) % self.p
-       #         print("[x, y] : ", [x, y])
-       #         return [x, y]
             
             if g1 == self.e:
                 return g2
