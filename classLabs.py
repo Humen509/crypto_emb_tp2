@@ -41,8 +41,8 @@ class Group(object):
                     g1 = g1 ^ self.poly
                 g2 = g2 >> 1
             return p
-        print("g1 =", g1)
-        print("g2 =", g2)
+        #print("g1 =", g1)
+        #print("g2 =", g2)
         if self.l == "ECConZp":
             
             if g1 == self.e:
@@ -55,7 +55,7 @@ class Group(object):
                 return self.e
             elif g1[0] == g2[0] and g1[1] == g2[1] and g2[1] != 0:
                 groupMulti = Group("ZpMultiplicative", 1, self.p - 1, self.p, self.poly, self.A, self.B)
-                lamda = (3*(groupMulti.exp(g1[0],2)) + self.A) * groupMulti.exp(2*g1[1], -1)
+                lamda = (3*groupMulti.exp(g1[0], 2) + self.A) * groupMulti.exp(2*g1[1], -1)
                 x = (groupMulti.exp(lamda, 2) - 2*g1[0]) % self.p
                 y = (lamda*(g1[0] - x) - g1[1]) % self.p
                 return [x, y]
@@ -188,6 +188,10 @@ class SubGroup(Group):
     def DiffieHellman(self, a, b, A, B, K):
         ga = self.exp(self.g, a)
         gb = self.exp(self.g, b)
+        #print("A = ", A)
         Ab = self.exp(A, b)
         Ba = self.exp(B, a)
-        return (A == ga and B == gb and K == Ab and Ab == Ba)
+        if self.l == "ECConZp":
+            return (A == ga and B == gb and Ab == Ba)
+        else:
+            return (A == ga and B == gb and K == Ab and Ab == Ba)

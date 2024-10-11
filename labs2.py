@@ -51,14 +51,26 @@ def testLabs1_part2():
     bobPub.close()
 
     a = int.from_bytes(ecdhkeyAlice[7:39], byteorder = 'big') # cle prive alice
-    Aa = int.from_bytes(ecdhkeyAlice[56:], byteorder = 'big') # cle pub alice
-    print("a =", hex(a))
-    print("Aa =", hex(Aa))
+    Aa = int.from_bytes(ecdhkeyAlice[57:], byteorder = 'big') # cle pub alice
+    xA = int.from_bytes(ecdhkeyAlice[57:89], byteorder = 'big') # cle pub alice
+    yA = int.from_bytes(ecdhkeyAlice[89:], byteorder = 'big') # cle pub alice
+    pointA = [xA, yA]
+
+    #print("a =", hex(a))
+    #print("Aa =", hex(Aa))
+    #print("xA =", hex(xA))
+    #print("yA =", hex(yA))
 
     b = int.from_bytes(ecdhkeyBob[7:39], byteorder = 'big') # cle prive bob
-    Bb = int.from_bytes(ecdhkeyBob[56:], byteorder = 'big') # cle pub bob
-    print("b =", hex(b))
-    print("Bb =", hex(Bb))
+    Bb = int.from_bytes(ecdhkeyBob[57:], byteorder = 'big') # cle pub bob
+    xB = int.from_bytes(ecdhkeyBob[57:89], byteorder = 'big') # cle pub bob
+    yB = int.from_bytes(ecdhkeyBob[89:], byteorder = 'big') # cle pub bob
+    pointB = [xB, yB]
+
+    #print("b =", hex(b))
+    #print("Bb =", hex(Bb))
+    #print("xB =", hex(xB))
+    #print("yB =", hex(yB))
 
     key1 = open("ecdhkey1.bin", 'rb')
     ecdhkey1 = key1.read()
@@ -80,7 +92,7 @@ def testLabs1_part2():
     idElement = [0, 0]
     monSousGroupeDH = classLabs.SubGroup("ECConZp", idElement, N, p, G, None, A, B)
 
-    print("DiffieHellman sur fichier dh avec K1: ", monSousGroupeDH.DiffieHellman(a, b, A, B, K1))
-    print("DiffieHellman sur fichier dh avec K2: ", monSousGroupeDH.DiffieHellman(a, b, A, B, K2))
+    print("DiffieHellman sur fichier dh avec K1: ", monSousGroupeDH.DiffieHellman(a, b, pointA, pointB, K1))
+    print("DiffieHellman sur fichier dh avec K2: ", monSousGroupeDH.DiffieHellman(a, b, pointA, pointB, K2))
 
 testLabs1_part2()
