@@ -195,3 +195,12 @@ class SubGroup(Group):
             return (A == ga and B == gb and Ab == Ba)
         else:
             return (A == ga and B == gb and K == Ab and Ab == Ba)
+
+
+    def ecdsa_sign(self, a, m, sk):
+        k = randint(1, self.N - 1)
+        K = k * self.G
+        t = K[0] % self.N
+        s = ((m + sk * t) * self.exp(k, -1)) % self.N
+        return s
+

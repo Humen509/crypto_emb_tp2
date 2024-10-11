@@ -95,4 +95,12 @@ def testLabs1_part2():
     print("DiffieHellman sur fichier dh avec K1: ", monSousGroupeDH.DiffieHellman(a, b, pointA, pointB, K1))
     print("DiffieHellman sur fichier dh avec K2: ", monSousGroupeDH.DiffieHellman(a, b, pointA, pointB, K2))
 
+    m = "Example of ECDSA with P-256"
+    h = a41a41a12a799548211c410c65d8133afde34d28bdd542e4b680cf2899c8a8c4
+    sk = c477f9f65c22cce20657faa5b2d1d8122336f851a508a1ed04e479c34985bf96
+    k = 7a1a7e52797fc8caaa435d2a4dace39158504bf204fbe19f14dbb427faee50ae
+    t = 2b42f576d07f4165ff65d1f3b1500f81e44c316f1f0b3ef57325b69aca46104f
+    s = dc42c2122d6392cd3e3a993a89502a8198c1886fe69d262c4b329bdb6b63faf1
+    
+
 testLabs1_part2()
