@@ -41,8 +41,7 @@ class Group(object):
                     g1 = g1 ^ self.poly
                 g2 = g2 >> 1
             return p
-        #print("g1 =", g1)
-        #print("g2 =", g2)
+        
         if self.l == "ECConZp":
             
             if g1 == self.e:
@@ -185,6 +184,7 @@ class SubGroup(Group):
         Ba = self.exp(B, a)
         return Ab == Ba
     
+
     def DiffieHellman(self, a, b, A, B, K):
         ga = self.exp(self.g, a)
         gb = self.exp(self.g, b)
@@ -197,10 +197,19 @@ class SubGroup(Group):
             return (A == ga and B == gb and K == Ab and Ab == Ba)
 
 
-    def ecdsa_sign(self, a, m, sk):
-        k = randint(1, self.N - 1)
-        K = k * self.G
+    def ecdsa_sign(self, m, sk):
+        #k = randint(1, self.N - 1)
+        k = 0x7a1a7e52797fc8caaa435d2a4dace39158504bf204fbe19f14dbb427faee50ae
+        K = self.g
+        print(k%self.p)
+        print(k%self.N)
+        print(k)
+        for i in range(0, k%self.p):
+            #print(i)
+            K = self.law(K, self.g)
+            #print(K)
+        
+        groupMulti = Group("ZpMultiplicative", 1, self.p - 1, self.p, self.poly, self.A, self.B)
         t = K[0] % self.N
-        s = ((m + sk * t) * self.exp(k, -1)) % self.N
-        return s
-
+        s = ((m + sk * t) * groupMulti.exp(k, -1)) % self.N
+        return [t,s]
