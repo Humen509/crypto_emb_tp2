@@ -101,10 +101,16 @@ def testLabs1_part2():
     hashed_m_str = hashed_obj.hexdigest()
     hm = int(hashed_m_str, 16)
     print("Verification hash : ", h == hm)
-    print(hm)
-    print(h)
-    print("Signature ECDSA :", [t,s] == monSousGroupeDH.ecdsa_sign(hm, sk))
-    print("t =", hex(monSousGroupeDH.ecdsa_sign(hm, sk)[0]))
-    print("s =", hex(monSousGroupeDH.ecdsa_sign(hm, sk)[1]))
+    print("Signature ECDSA :", [t, s] == monSousGroupeDH.ecdsa_sign(hm, sk, k))
 
+    t1 = h * pow(s, -1, N) % N
+    t2 = t * pow(s, -1, N) % N
+    Q1 = monSousGroupeDH.exp(G,t1)
+    pk = monSousGroupeDH.exp(G, sk)
+    Q2 = monSousGroupeDH.exp(pk, t2)
+    print("t1 =",hex(t1))
+    print("t2 =",hex(t2))
+    print("Q1.x =", hex(Q1[0]))
+    print("Q2.x =", hex(Q2[0]))
+    print("Verification signature ECDSA :", monSousGroupeDH.ecdsa_verif(hm, s, t, pk))
 testLabs1_part2()

@@ -1,4 +1,4 @@
-from math import *
+from math import ceil, floor, log2, isqrt
 from random import *
 from sympy.ntheory import factorint
 from sympy.ntheory.modular import crt
@@ -105,7 +105,6 @@ class SubGroup(Group):
             return True
         return ((P[1]**2) % self.p) == ((P[0]**3 + self.A * P[0] + self.B) % self.p )
 
-    #Part 2
     def DLbyBabyStepGiantStep(self, h):
         w = ceil(isqrt(self.N))
         T = []
@@ -127,20 +126,17 @@ class SubGroup(Group):
                 if x == T[i]:
                     return (w*i + j) % self.N
     
-    #Part 2
     def DLTrialMultiplication(self, h):
         for i in range(0, self.N):
             if self.exp(self.g, i) == h:
                 return i
 
-    #Part 2    
     def ComputeDL(self, h, tau = 1000):
         if self.N <= tau:
             return self.DLTrialMultiplication(h)
         else:
             return self.DLbyBabyStepGiantStep(h)
 
-    #Part 3
     def DLinPrimePowerOrderGoup(self, h, pk, ek):
         n = ceil(pow(pk, ek-1))
         y = self.exp(self.g, n)
@@ -156,7 +152,6 @@ class SubGroup(Group):
           
         return self.exp(self.g, i), i
     
-    #Part 4 en pause
     def DLbyPohligHellman(self, h):
         moduli = []
         residu = []
@@ -172,7 +167,6 @@ class SubGroup(Group):
             
         return crt(moduli, residu)[0]
 
-    #Part 5
     def testDiffieHellman(self):
         a = randint(0, self.N)
         b = randint(0, self.N)
@@ -197,19 +191,26 @@ class SubGroup(Group):
             return (A == ga and B == gb and K == Ab and Ab == Ba)
 
 
-    def ecdsa_sign(self, m, sk):
-        #k = randint(1, self.N - 1)
-        k = 0x7a1a7e52797fc8caaa435d2a4dace39158504bf204fbe19f14dbb427faee50ae
-        K = self.g
-        print(k%self.p)
-        print(k%self.N)
-        print(k)
-        for i in range(0, k%self.p):
-            #print(i)
-            K = self.law(K, self.g)
-            #print(K)
-        
+    def ecdsa_sign(self, m, sk, testK = None):
+        if(testK):
+            k = testK
+        else:
+            k = randint(1, self.N - 1)
+        #k = 0x7a1a7e52797fc8caaa435d2a4dace39158504bf204fbe19f14dbb427faee50ae
+        K = self.exp(self.g, k)
+
         groupMulti = Group("ZpMultiplicative", 1, self.p - 1, self.p, self.poly, self.A, self.B)
         t = K[0] % self.N
-        s = ((m + sk * t) * groupMulti.exp(k, -1)) % self.N
+        s = ((m + sk*t) * pow(k, -1, self.N))% self.N
         return [t,s]
+    
+    def ecdsa_verif(self, m, s, t, pubk):
+        if (t < 1 or t > self.N-1) or (s < 1 or s > self.N-1):
+            return False
+        
+        R = self.law(self.exp(self.g, m*pow(s, -1, self.N)), self.exp(pubk, t*pow(s, -1, self.N)))
+        
+        if(R[0]%self.N != t):
+            return False
+        
+        return True
