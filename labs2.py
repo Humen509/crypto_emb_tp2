@@ -113,4 +113,12 @@ def testLabs1_part2():
     print("Q1.x =", hex(Q1[0]))
     print("Q2.x =", hex(Q2[0]))
     print("Verification signature ECDSA :", monSousGroupeDH.ecdsa_verif(hm, s, t, pk))
+
+    print("\n ===== PART 6 =====")
+    
+    B = 2982236234343851336267446656627785008148015875581
+    Gx = 5759917430716753942228907521556834309477856722486
+    Gy = 1216722771297916786238928618659324865903148082417
+    N = 0x40000000000000000000292fe77e70c12a4234c33
+
 testLabs1_part2()

@@ -42,6 +42,9 @@ class Group(object):
                 g2 = g2 >> 1
             return p
         
+        if self.l == "ECC_F2^n":
+            return p
+        
         if self.l == "ECConZp":
             
             if g1 == self.e:
