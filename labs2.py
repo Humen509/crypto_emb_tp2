@@ -30,6 +30,7 @@ def testLabs1_part2():
     print("Pkx :", hex(Pkx))
     print("Pky :", hex(Pky))
     print("Test Google :", monSousGroup.verify([Pkx, Pky]))
+    print("Verify with [Gx, Gy] :", monSousGroup.verify(G))
 
     print("\n ===== PART 2 =====")
 
@@ -108,10 +109,6 @@ def testLabs1_part2():
     Q1 = monSousGroupeDH.exp(G,t1)
     pk = monSousGroupeDH.exp(G, sk)
     Q2 = monSousGroupeDH.exp(pk, t2)
-    print("t1 =",hex(t1))
-    print("t2 =",hex(t2))
-    print("Q1.x =", hex(Q1[0]))
-    print("Q2.x =", hex(Q2[0]))
     print("Verification signature ECDSA :", monSousGroupeDH.ecdsa_verif(hm, s, t, pk))
 
     print("\n ===== PART 6 =====")
@@ -120,5 +117,43 @@ def testLabs1_part2():
     Gx = 5759917430716753942228907521556834309477856722486
     Gy = 1216722771297916786238928618659324865903148082417
     N = 0x40000000000000000000292fe77e70c12a4234c33
+    G = [Gx, Gy]
+    poly = (1<<163)^(1<<7)^(1<<6)^(1<<3)^1
+    courbePart6 = classLabs.SubGroup("ECC_F2^n", idElement, N, p, G, poly, 1, B)
+    print("Verify with [0, 0] :", courbePart6.verify(idElement))
+    print("Verify with [Gx, Gy] :", courbePart6.verify(G))
+    print("testDiffieHellman using B-163 :", courbePart6.testDiffieHellman())
+
+    m = "Example of ECDSA with B-163"
+    h = 0x728d59bbe028509dd5d2ce480f458e2925232ac3 
+    d = 0x348d138c2de9447bd288feed177222ee377fb7bea 
+    Qx = 0x66b015c0b72b0f81b1ecba6f58e7545d94744644c
+    Qy = 0xba6d4d62419155b186a29784f4aa4b8e8e1e7f76 
+    k = 0x8ed0f93f7d492bb3991847d0e96f9cc3947259aa
+    Kx = 0x760938a97d88b30fdfb2cce1a4c59783ad0ed8fde
+    inv_Kx = 0x36dc66491684211373aaa8bd16024dd0a12a8ff11
+    t = 0x360938a97d88b30fdfb2a3b1bd4726c282cca43ab
+    s = 0x19a7b5043d93a13d714b4717fc0698e6791cf7f7c
+    inv_s = 0x35417609847921e6d0e2691d924335adf62c1b6b2 % N
+    inv_hs = 0x3c4099db241a80c807e02d81be10955b2eb2e5d8c % N
+    inv_ts = 0x160ccedabb7e3e767a604d8b042a65751708cc262 % N
+    Rx = 0x760938a97d88b30fdfb2cce1a4c59783ad0ed8fde
+    
+    hashed_obj = hashlib.sha1()
+    hashed = m.encode('utf-8')
+    hashed_obj.update(hashed)
+    hashed_m_str = hashed_obj.hexdigest()
+    hm = int(hashed_m_str, 16)
+    print("Verification hash : ", h == hm)
+    print("Signature ECDSA :", [t, s] == monSousGroupeDH.ecdsa_sign(hm, d, k))
+    
+    t1 = h * pow(s, -1, N) % N
+    t2 = t * pow(s, -1, N) % N
+    Q1 = monSousGroupeDH.exp(G,t1)
+    pk = monSousGroupeDH.exp(G, d)
+    Q2 = monSousGroupeDH.exp(pk, t2)
+    print("Verification signature ECDSA :", monSousGroupeDH.ecdsa_verif(hm, s, t, pk))
+
+
 
 testLabs1_part2()

@@ -18,9 +18,9 @@ class Group(object):
     
 
     def checkParameters(self):
-        if self.l != "ZpAdditive" and self.l != "ZpMultiplicative" and self.l != "F2^n" and self.l != "ECConZp":
+        if self.l != "ZpAdditive" and self.l != "ZpMultiplicative" and self.l != "F2^n" and self.l != "ECConZp" and self.l != "ECC_F2^n" :
             raise Exception("l parameter is unknown")
-        return (self.l == "ECConZp" and self.e == [0, 0] and ((4*self.A**3 + 27*self.B**2) % self.p != 0) ) or ((self.l == "ZpAdditive" and self.e == 0)) or (self.l == "ZpMultiplicative" and self.e == 1) or (self.l == "F2^n" and self.e == 1)
+        return (self.l == "ECConZp" and self.e == [0, 0] and ((4*self.A**3 + 27*self.B**2) % self.p != 0) ) or self.l != "ECConZp" or ((self.l == "ZpAdditive" and self.e == 0)) or (self.l == "ZpMultiplicative" and self.e == 1) or (self.l == "F2^n" and self.e == 1)
 
 
     def law(self, g1, g2):
@@ -42,10 +42,8 @@ class Group(object):
                 g2 = g2 >> 1
             return p
         
-        if self.l == "ECC_F2^n":
-            return p
-        
-        if self.l == "ECConZp":
+
+        if self.l == "ECConZp" or self.l == "ECC_F2^n":
             
             if g1 == self.e:
                 return g2
@@ -201,7 +199,7 @@ class SubGroup(Group):
             k = randint(1, self.N - 1)
         #k = 0x7a1a7e52797fc8caaa435d2a4dace39158504bf204fbe19f14dbb427faee50ae
         K = self.exp(self.g, k)
-
+        
         groupMulti = Group("ZpMultiplicative", 1, self.p - 1, self.p, self.poly, self.A, self.B)
         t = K[0] % self.N
         s = ((m + sk*t) * pow(k, -1, self.N))% self.N
